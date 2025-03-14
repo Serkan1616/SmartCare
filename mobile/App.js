@@ -14,6 +14,7 @@ import HomePage from './Pages/HomePage';
 import PredictionPage from './Pages/PredictionPage';
 import ProfilePage from './Pages/ProfilePage';
 import HealthProfilePage from './Pages/HealthProfilePage';
+import HealthTrackingPage from './Pages/HealthTrackingPage';
 
 const Stack = createStackNavigator();
 
@@ -138,6 +139,16 @@ export default function App() {
           component={HealthProfilePage}
           options={{
             title: 'Health Profile',
+            headerStyle: { backgroundColor: '#211C84' },
+            headerTintColor: '#fff',
+          }}
+        />
+        {/* HealthTracking Screen */}
+        <Stack.Screen
+          name="HealthTracking"
+          component={HealthTrackingPage}
+          options={{
+            title: 'Health Tracking',
             headerStyle: { backgroundColor: '#211C84' },
             headerTintColor: '#fff',
           }}
