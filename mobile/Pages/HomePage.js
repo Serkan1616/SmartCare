@@ -1,15 +1,16 @@
 // Pages/HomePage.js
 import React from 'react';
-import { ScrollView, StyleSheet, View, Image } from 'react-native';
-import { Text, Card, Button, Icon } from 'react-native-elements';
+import { ScrollView, StyleSheet, View, Image, Text } from 'react-native';
+import { Card, Button, Icon } from 'react-native-elements';
 
 export default function HomePage({ navigation }) {
     return (
         <ScrollView style={styles.container}>
             {/* Başlık */}
-            <Text h3 style={styles.header}>
-                Welcome to Health & Cancer Prediction App
+            <Text style={styles.header}>
+                Welcome to <Text style={{ fontWeight: 'bold', color: '#211C84' }}>Health & Cancer Prediction App</Text>
             </Text>
+
 
             {/* Sağlık Profil & Semptomlar Kartları (2 Card) */}
             <View style={styles.cardRow}>

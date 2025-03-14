@@ -1,7 +1,7 @@
 // Pages/CreatePasswordPage.js
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ImageBackground, TouchableOpacity } from 'react-native';
-import { Input, Text } from 'react-native-elements';
+import { View, StyleSheet, Alert, ImageBackground, TouchableOpacityi, Text } from 'react-native';
+import Input from 'react-native-elements';
 
 export default function CreatePasswordPage({ navigation }) {
     const [password, setPassword] = useState('');

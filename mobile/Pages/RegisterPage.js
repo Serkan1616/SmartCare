@@ -7,15 +7,32 @@ export default function RegisterPage({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleRegister = () => {
-        // Basit doğrulama (gerçek uygulamada API ile bağlantı yapılmalı)
-        if (name && email && password) {
-            Alert.alert('Registration Successful!', 'You can now log in.');
-            navigation.navigate('Login');
-        } else {
+    const handleRegister = async () => {
+        if (!name || !email || !password) {
             Alert.alert('Error', 'Please fill out all fields.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://192.168.43.138:5000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Registration Successful!', 'You can now log in.');
+                navigation.navigate('Login');
+            } else {
+                Alert.alert('Error', data.msg);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong.');
         }
     };
+
 
     return (
         <ImageBackground

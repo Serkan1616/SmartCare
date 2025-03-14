@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground } from 'react-native';
-import { Button, Text } from 'react-native-elements';
+import { View, StyleSheet, ImageBackground, Text } from 'react-native';
+import { Button } from 'react-native-elements';
 
 export default function EntryScreen({ navigation }) {
     return (

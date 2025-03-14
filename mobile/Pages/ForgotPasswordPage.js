@@ -1,7 +1,7 @@
 // Pages/ForgotPasswordPage.js
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ImageBackground, TouchableOpacity } from 'react-native';
-import { Input, Text } from 'react-native-elements';
+import { View, StyleSheet, Alert, ImageBackground, TouchableOpacity, Text } from 'react-native';
+import { Input } from 'react-native-elements';
 
 export default function ForgotPasswordPage({ navigation }) {
     const [email, setEmail] = useState('');

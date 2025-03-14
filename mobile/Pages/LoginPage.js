@@ -1,18 +1,38 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ImageBackground } from 'react-native';
 import { Icon } from 'react-native-elements'; // İkonları eklemek için
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginPage({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Basit doğrulama (gerçek uygulamada API ile bağlantı yapılmalı)
-        if (email === 'test' && password === '123') {
-            Alert.alert('Login Successful!', 'Welcome to the Health Prediction App!');
-            navigation.navigate('Home');
-        } else {
-            Alert.alert('Error', 'Invalid email or password. Please try again.');
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Please enter email and password.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://192.168.43.138:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+
+                await AsyncStorage.setItem('userToken', data.token);
+
+                Alert.alert('Login Successful!', `Welcome ${data.user.name}`);
+                navigation.navigate('Home');
+            } else {
+                Alert.alert('Error', data.msg);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong.');
         }
     };
 

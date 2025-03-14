@@ -1,6 +1,6 @@
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { Card, Button, Text } from 'react-native-elements';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
+import { Card, Button } from 'react-native-elements';
 import axios from 'axios';
 
 export default function PredictionPage({ navigation }) {
