@@ -1,69 +1,42 @@
 import React from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import { Card, Button } from 'react-native-elements';
-import axios from 'axios';
 
 export default function PredictionPage({ navigation }) {
     const predictions = [
         {
             id: '1',
-            title: "Brain Tumor Prediction",
-            image: require('../assets/brain_tumor.jpg'), // Replace with your image path
-        },
-        {
-            id: '2',
-            title: "Lung Cancer Prediction",
-            image: require('../assets/chest_cancer.jpg'),
-        },
-        {
-            id: '3',
             title: "Retina Cancer Prediction",
             image: require('../assets/retina_cancer.jpg'),
-        },
-        {
-            id: '4',
-            title: "Skin Cancer Prediction",
-            image: require('../assets/skin_cancer.jpg'),
-        },
+        }
     ];
 
     const renderItem = ({ item }) => (
         <Card containerStyle={styles.card}>
             <Card.Image source={item.image} style={styles.image} />
             <Text h4 style={styles.cardTitle}>{item.title}</Text>
+
+            {/* Retina Cancer Prediction için yönlendirme */}
             <Button
                 title="Make Prediction"
-                onPress={() => getPrediction({ feature1: 1.23, feature2: 4.56 })}
+                onPress={() => navigation.navigate('RetinaPrediction')}
                 buttonStyle={styles.predictionButton}
             />
         </Card>
     );
-
-    const getPrediction = async (data) => {
-        try {
-            const response = await axios.post('http://192.168.1.108:3000/predict', data);
-            console.log('Prediction result:', response.data);
-            // Use the prediction result in your app
-        } catch (error) {
-            console.error('Error fetching prediction:', error);
-        }
-    };
 
     return (
         <FlatList
             data={predictions}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            numColumns={2}
             contentContainerStyle={styles.container}
         />
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 15,
-    },
+    container: { padding: 15 },
     card: {
         flex: 1,
         margin: 10,
@@ -72,7 +45,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        elevation: 5, // For Android
+        elevation: 5,
     },
     image: {
         height: 150,

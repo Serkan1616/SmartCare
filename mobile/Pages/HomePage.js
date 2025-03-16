@@ -13,19 +13,18 @@ export default function HomePage({ navigation }) {
             <View style={styles.cardRow}>
                 <FeatureCard
                     title="Health Profile"
-                    image='https://images.unsplash.com/vector-1739647326693-5c3bf51aea69?q=80&w=2360&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                    image='https://ddagal3o2o4a.cloudfront.net/assets/icon-health-profile-4aae4aa1f94c40f08331b46e356a0c69e597f3aea7f08b55381712a13e58cf9d.png'
                     description="Create your health profile to track your personal health data."
                     buttonTitle="Create Health Profile"
                     onPress={() => navigation.navigate('HealthProfile')}
                 />
 
                 <FeatureCard
-                    title="Symptoms Checker"
-                    image='https://images.unsplash.com/vector-1739647326693-5c3bf51aea69?q=80&w=2360&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    description="Check your symptoms and get insights on possible health conditions."
-                    buttonTitle="Check Symptoms"
-                    // onPress={() => navigation.navigate('Predictions')}
-                    onPress={() => navigation.navigate('HealthTracking')}
+                    title="Heart Attack & Stroke Detector"
+                    image='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-C524dbyEgoX4VeSZfPLGVqiA9BOloNOegw&s'
+                    description="Assess your risk of heart attack or stroke by entering key health details."
+                    buttonTitle="Check Your Risk"
+                    onPress={() => navigation.navigate('SymptomsInputPage')}
                 />
             </View>
 
@@ -33,18 +32,18 @@ export default function HomePage({ navigation }) {
             <View style={styles.cardRow}>
                 <FeatureCard
                     title="Track Your Health"
-                    image='https://images.unsplash.com/vector-1739647326693-5c3bf51aea69?q=80&w=2360&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    description="Keep track of your daily health activities like diet, exercise, and hydration."
+                    image='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJYMJZ1yXpN3zmGfJLCb9kocHinLtXVezkYQ&s'
+                    description="Monitor your daily health habits like diet, exercise, and hydration."
                     buttonTitle="Track Health"
                     onPress={() => navigation.navigate('HealthTracking')}
                 />
 
                 <FeatureCard
                     title="Cancer Screening"
-                    image='https://images.unsplash.com/vector-1739647326693-5c3bf51aea69?q=80&w=2360&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    description="Get personalized cancer screening recommendations based on your age and health profile."
+                    image='https://www.ayushmanhhs.in/wp-content/uploads/2024/05/Cancer-Screening-1-612x321.jpg'
+                    description="Personalized cancer screening recommendations based on your age and health data."
                     buttonTitle="Get Screening"
-                    onPress={() => navigation.navigate('CancerScreening')}
+                    onPress={() => navigation.navigate('Predictions')}
                 />
             </View>
         </ScrollView>
@@ -53,14 +52,23 @@ export default function HomePage({ navigation }) {
 
 // **Kart bileşeni (Card yerine kullanıyoruz)**
 const FeatureCard = ({ title, image, description, buttonTitle, onPress }) => {
+    // Açıklama metnini kısaltma fonksiyonu
+    const truncateText = (text, maxLength = 60) => {
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
+
     return (
         <View style={styles.card}>
             <Image source={{ uri: image }} style={styles.cardImage} />
             <Text style={styles.cardTitle}>{title}</Text>
-            <Text style={styles.cardText}>{description}</Text>
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-                <Text style={styles.buttonText}>{buttonTitle}</Text>
-            </TouchableOpacity>
+            <Text style={styles.cardText}>{truncateText(description)}</Text>
+
+            {/* Sabit Buton Alanı */}
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={onPress}>
+                    <Text style={styles.buttonText}>{buttonTitle}</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         alignItems: 'center',
+        flex: 1, // Kartı esnek hale getiriyoruz
     },
     cardImage: {
         width: '100%',
@@ -107,9 +116,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         color: '#555',
         textAlign: 'center',
+        flex: 1, // Açıklama alanının genişlemesini sağlıyor
+    },
+    buttonContainer: {
+        width: '100%',
+        marginTop: 'auto',  // Butonu kartın altına sabitler
+        marginBottom: 10,   // Alt boşluk ekler
     },
     button: {
-        backgroundColor: '#211C84',
+        backgroundColor: '#4D55CC',
         padding: 10,
         borderRadius: 8,
         alignItems: 'center',
@@ -121,5 +136,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
-

@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
 
     /* Butonlar */
     button: {
-        backgroundColor: '#211C84',
+        backgroundColor: '#4D55CC',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
