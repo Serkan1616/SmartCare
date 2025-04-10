@@ -29,7 +29,7 @@ export default function HealthTrackingPage({ navigation }) {
                 return;
             }
 
-            const response = await fetch('http://192.168.43.138:5000/api/health/get-health-data', {
+            const response = await fetch('http://192.168.63.138:5000/api/health/get-health-data', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -63,7 +63,7 @@ export default function HealthTrackingPage({ navigation }) {
                 return;
             }
 
-            const response = await fetch('http://192.168.43.138:5000/api/health/track-health', {
+            const response = await fetch('http://192.168.63.138:5000/api/health/track-health', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -82,7 +82,7 @@ export default function HealthTrackingPage({ navigation }) {
                 setCalories('');
                 setWater('');
                 setExercise('');
-                await fetchHealthData(); // ✅ Yeni verileri anında çek
+                await fetchHealthData(); //  Yeni verileri anında çek
             } else {
                 Alert.alert('Error', data.msg);
             }
@@ -91,7 +91,7 @@ export default function HealthTrackingPage({ navigation }) {
         }
     };
 
-    // 🔥 Günlük toplamları hesapla (Aynı gün girilen değerleri topluyoruz)
+    //  Günlük toplamları hesapla (Aynı gün girilen değerleri topluyoruz)
     const dailyTotals = healthData.reduce((acc, item) => {
         const date = new Date(item.date).toLocaleDateString();
         if (!acc[date]) {

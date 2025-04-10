@@ -21,7 +21,7 @@ export default function HealthProfilePage({ navigation }) {
     const fetchHealthProfile = async () => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            const response = await fetch('http://192.168.43.138:5000/api/auth/profile', {
+            const response = await fetch('http://192.168.63.138:5000/api/profile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default function HealthProfilePage({ navigation }) {
     const handleSave = async () => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            const response = await fetch('http://192.168.43.138:5000/api/auth/profile/update', {
+            const response = await fetch('http://192.168.63.138:5000/api/profile/update', {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

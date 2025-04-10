@@ -11,7 +11,7 @@ export default function EntryScreen({ navigation }) {
             <View style={styles.container}>
                 <Text h3 style={styles.header}>Welcome to SmartCare</Text>
 
-                {/* Sign In Button */}
+                {/* Log In Button */}
                 <Button
                     title="Login"
                     onPress={() => navigation.navigate('Login')}

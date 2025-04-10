@@ -7,19 +7,15 @@ export default function CreatePasswordPage({ navigation }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleCreatePassword = () => {
-        if (password && confirmPassword) {
-            if (password === confirmPassword) {
-                // In a real app, update the password via an API call.
-                Alert.alert('Password Reset Successful!', 'Your password has been updated.');
-                navigation.navigate('Login');
-            } else {
-                Alert.alert('Error', 'Passwords do not match.');
-            }
-        } else {
-            Alert.alert('Error', 'Please fill in all fields.');
-        }
-    };
+    const handleCreatePassword = async () => {
+        const token = await AsyncStorage.getItem('resetToken');  // Token AsyncStorage'den alınmalı
+        const response = await axios.post(`http://192.168.63.138:5000/api/auth/reset-password`, {
+            email: "example@gmail.com", // Giriş yapan kullanıcının e-postası
+            otp: otp,
+            newPassword: password
+        });
+    }
+
 
     return (
         <ImageBackground

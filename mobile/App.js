@@ -20,6 +20,9 @@ import HealthTrackingPage from './Pages/HealthTrackingPage';
 import ProfileEditPage from './Pages/ProfileEditPage';
 import SymptomsInputPage from './Pages/SymptomsInputPage';
 import RetinaPredictionPage from './Pages/RetinaPredictionPage';
+import VerifyOTPPage from './Pages/VerifyOTPPage';
+import BloodReportPredictionPage from './Pages/BloodReportPredictionPage';
+import AnemiaPredictionPage from './Pages/AnemiaPredictionPage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -173,12 +176,16 @@ export default function App() {
         <Stack.Screen name="HealthTracking" component={HealthTrackingPage} options={{ title: 'Health Tracking' }} />
 
         <Stack.Screen name="SymptomsInputPage" component={SymptomsInputPage} options={{ title: 'Symptoms Checker' }} />
+        <Stack.Screen name="BloodReportPrediction" component={BloodReportPredictionPage} options={{ title: 'BloodReportPredictionPage Checker' }} />
+
+        <Stack.Screen name="AnemiaPrediction" component={AnemiaPredictionPage} options={{ title: 'Anemia Prediction' }} />
 
         <Stack.Screen
           name="RetinaPrediction"
           component={RetinaPredictionPage}
           options={{ title: 'Retina Prediction' }}
         />
+        <Stack.Screen name="verifyOTP" component={VerifyOTPPage} options={{ title: 'Verify OTP' }} />
 
       </Stack.Navigator>
     </NavigationContainer>

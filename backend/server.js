@@ -51,7 +51,7 @@ app.post('/api/retina-predict', upload.single('file'), async (req, res) => {
     }
 });
 
-
+app.use('/api/profile', require('./routes/profileRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/health', healthRoutes);
 

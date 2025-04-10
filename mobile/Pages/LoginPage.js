@@ -14,7 +14,7 @@ export default function LoginPage({ navigation }) {
         }
 
         try {
-            const response = await fetch('http://192.168.43.138:5000/api/auth/login', {
+            const response = await fetch('http://192.168.63.138:5000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -23,7 +23,6 @@ export default function LoginPage({ navigation }) {
             const data = await response.json();
 
             if (response.ok) {
-
                 await AsyncStorage.setItem('userToken', data.token);
 
                 Alert.alert('Login Successful!', `Welcome ${data.user.name}`);
@@ -35,6 +34,7 @@ export default function LoginPage({ navigation }) {
             Alert.alert('Error', 'Something went wrong.');
         }
     };
+
 
     return (
         <ImageBackground

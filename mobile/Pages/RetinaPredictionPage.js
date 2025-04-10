@@ -44,7 +44,7 @@ export default function RetinaPredictionPage() {
         });
 
         try {
-            const response = await axios.post('http://192.168.43.138:8000/retina-predict', formData, {
+            const response = await axios.post('http://192.168.63.138.138:8000/retina-predict', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 

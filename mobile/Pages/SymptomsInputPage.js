@@ -15,7 +15,7 @@ export default function SymptomsInputPage({ navigation }) {
 
     const handlePrediction = async () => {
         try {
-            const response = await axios.post('http://192.168.43.138:8000/predict', {
+            const response = await axios.post('http://192.168.63.138.138:8000/predict', {
                 gender: parseInt(gender),
                 age: parseFloat(age),
                 hypertension: hypertension ? 1 : 0,

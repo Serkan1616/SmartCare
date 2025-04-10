@@ -16,7 +16,7 @@ export default function ProfileEditPage({ navigation }) {
             return;
         }
 
-        const response = await fetch('http://192.168.43.138:5000/api/auth/update-profile', {
+        const response = await fetch('http://192.168.63.138:5000/api/profile/update-profile', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,

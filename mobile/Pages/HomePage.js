@@ -16,7 +16,7 @@ export default function HomePage({ navigation }) {
                     image='https://ddagal3o2o4a.cloudfront.net/assets/icon-health-profile-4aae4aa1f94c40f08331b46e356a0c69e597f3aea7f08b55381712a13e58cf9d.png'
                     description="Create your health profile to track your personal health data."
                     buttonTitle="Create Health Profile"
-                    onPress={() => navigation.navigate('HealthProfile')}
+                    onPress={() => navigation.navigate('AnemiaPrediction')}
                 />
 
                 <FeatureCard

@@ -24,7 +24,7 @@ export default function ProfilePage({ navigation }) {
                 return;
             }
 
-            const response = await fetch('http://192.168.43.138:5000/api/auth/profile', {
+            const response = await fetch('http://192.168.63.138:5000/api/profile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

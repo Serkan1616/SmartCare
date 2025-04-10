@@ -14,7 +14,7 @@ export default function RegisterPage({ navigation }) {
         }
 
         try {
-            const response = await fetch('http://192.168.43.138:5000/api/auth/register', {
+            const response = await fetch('http://192.168.63.138:5000/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
@@ -23,8 +23,10 @@ export default function RegisterPage({ navigation }) {
             const data = await response.json();
 
             if (response.ok) {
-                Alert.alert('Registration Successful!', 'You can now log in.');
-                navigation.navigate('Login');
+                Alert.alert('Registration Successful!', 'Check your email for the OTP.');
+
+                // ✅ E-posta bilgisini VerifyOTPPage'e taşı
+                navigation.navigate('verifyOTP', { email });
             } else {
                 Alert.alert('Error', data.msg);
             }
@@ -33,17 +35,14 @@ export default function RegisterPage({ navigation }) {
         }
     };
 
-
     return (
         <ImageBackground
-            source={{ uri: 'https://images.unsplash.com/photo-1638202993928-7267aad84c31?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }} // Sağlık temalı arka plan resmi
+            source={{ uri: 'https://images.unsplash.com/photo-1638202993928-7267aad84c31?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }}
             style={styles.background}
         >
             <View style={styles.container}>
-                {/* Uygulama adı */}
                 <Text style={styles.header}>SmartCare</Text>
 
-                {/* Name Girişi */}
                 <View style={styles.inputContainer}>
                     <Icon name="person" size={24} color="#211C84" />
                     <TextInput
@@ -55,7 +54,6 @@ export default function RegisterPage({ navigation }) {
                     />
                 </View>
 
-                {/* Email Girişi */}
                 <View style={styles.inputContainer}>
                     <Icon name="email" size={24} color="#211C84" />
                     <TextInput
@@ -69,7 +67,6 @@ export default function RegisterPage({ navigation }) {
                     />
                 </View>
 
-                {/* Şifre Girişi */}
                 <View style={styles.inputContainer}>
                     <Icon name="lock" size={24} color="#211C84" />
                     <TextInput
@@ -82,12 +79,10 @@ export default function RegisterPage({ navigation }) {
                     />
                 </View>
 
-                {/* Kayıt Ol Butonu */}
                 <TouchableOpacity style={styles.button} onPress={handleRegister}>
                     <Text style={styles.buttonText}>Register</Text>
                 </TouchableOpacity>
 
-                {/* Kayıtlı olmayanlar için giriş bağlantısı */}
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.link}>Already have an account? Login</Text>
                 </TouchableOpacity>

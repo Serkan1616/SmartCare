@@ -12,7 +12,7 @@ router.post('/track-health', authMiddleware, async (req, res) => {
         }
 
         const newTracking = new HealthTracking({
-            userId: req.user._id, // ✅ req.user.id yerine req.user._id kullanıldı!
+            userId: req.user._id,
             calories,
             water,
             exercise

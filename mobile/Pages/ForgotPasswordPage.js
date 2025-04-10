@@ -6,14 +6,20 @@ import { Input } from 'react-native-elements';
 export default function ForgotPasswordPage({ navigation }) {
     const [email, setEmail] = useState('');
 
-    const handleResetPassword = () => {
-        if (email) {
-            // For now, we navigate directly to the CreatePassword page.
-            navigation.navigate('CreatePassword');
-        } else {
+    const handleForgotPassword = async () => {
+        if (!email) {
             Alert.alert('Error', 'Please enter your email.');
+            return;
+        }
+
+        try {
+            await axios.post('http://192.168.63.138:5000/api/auth/forgot-password', { email });
+            Alert.alert('Success', 'Password reset link sent to your email.');
+        } catch (error) {
+            Alert.alert('Error', 'Failed to send reset link.');
         }
     };
+
 
     return (
         <ImageBackground
@@ -33,9 +39,10 @@ export default function ForgotPasswordPage({ navigation }) {
                     inputStyle={styles.input}
                 />
                 {/* Reset Link Button */}
-                <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+                <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
                     <Text style={styles.buttonText}>Send Reset Link</Text>
                 </TouchableOpacity>
+
                 {/* Back to Login Button */}
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
