@@ -1,39 +1,44 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ImageBackground } from 'react-native';
 import { Icon } from 'react-native-elements'; // İkonları eklemek için
+import { useApi } from '../../context/ApiContext';  // import the context
+
 
 export default function RegisterPage({ navigation }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { apiUrl } = useApi();  // Get the apiUrl from the context
 
-    const handleRegister = async () => {
-        if (!name || !email || !password) {
-            Alert.alert('Error', 'Please fill out all fields.');
-            return;
+   const handleRegister = async () => {
+    if (!name || !email || !password) {
+        Alert.alert('Error', 'Please fill out all fields.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${apiUrl}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Alert.alert('Registration Successful!', 'You can now log in.');
+
+            // ✅ OTP ekranına yönlendirme şimdilik kapatıldı
+            // navigation.navigate('verifyOTP', { email });
+
+            navigation.navigate('Login');
+        } else {
+            Alert.alert('Error', data.msg);
         }
-
-        try {
-            const response = await fetch('http://192.168.63.138:5000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                Alert.alert('Registration Successful!', 'Check your email for the OTP.');
-
-                // ✅ E-posta bilgisini VerifyOTPPage'e taşı
-                navigation.navigate('verifyOTP', { email });
-            } else {
-                Alert.alert('Error', data.msg);
-            }
-        } catch (error) {
-            Alert.alert('Error', 'Something went wrong.');
-        }
-    };
+    } catch (error) {
+        Alert.alert('Error', 'Something went wrong.');
+    }
+};
 
     return (
         <ImageBackground

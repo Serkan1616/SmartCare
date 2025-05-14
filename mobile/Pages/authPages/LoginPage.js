@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ImageBackground } from 'react-native';
 import { Icon } from 'react-native-elements'; // İkonları eklemek için
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useApi } from '../../context/ApiContext';  // import the context
+
 
 export default function LoginPage({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { apiUrl } = useApi();  // Get the apiUrl from the context
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -14,7 +17,7 @@ export default function LoginPage({ navigation }) {
         }
 
         try {
-            const response = await fetch('http://192.168.63.138:5000/api/auth/login', {
+            const response = await fetch(`${apiUrl}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

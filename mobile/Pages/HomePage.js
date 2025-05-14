@@ -16,32 +16,32 @@ export default function HomePage({ navigation }) {
                     image='https://ddagal3o2o4a.cloudfront.net/assets/icon-health-profile-4aae4aa1f94c40f08331b46e356a0c69e597f3aea7f08b55381712a13e58cf9d.png'
                     description="Create your health profile to track your personal health data."
                     buttonTitle="Create Health Profile"
-                    onPress={() => navigation.navigate('AnemiaPrediction')}
+                    onPress={() => navigation.navigate('HealthProfile')}
                 />
 
                 <FeatureCard
-                    title="Heart Attack & Stroke Detector"
+                    title="Anemia Prediction"
                     image='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-C524dbyEgoX4VeSZfPLGVqiA9BOloNOegw&s'
-                    description="Assess your risk of heart attack or stroke by entering key health details."
+                    description="Upload your hemogram report to detect potential anemia types with AI-powered analysis."
                     buttonTitle="Check Your Risk"
-                    onPress={() => navigation.navigate('SymptomsInputPage')}
+                    onPress={() => navigation.navigate('AnemiaPrediction')}
                 />
             </View>
 
             {/* Sağlık Takibi & Kanser Tarama Kartları */}
             <View style={styles.cardRow}>
                 <FeatureCard
-                    title="Track Your Health"
+                    title="Hemogram Statistics"
                     image='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJYMJZ1yXpN3zmGfJLCb9kocHinLtXVezkYQ&s'
-                    description="Monitor your daily health habits like diet, exercise, and hydration."
+                    description="Visualize and track changes in your blood test values over time with detailed hemogram statistics."
                     buttonTitle="Track Health"
                     onPress={() => navigation.navigate('HealthTracking')}
                 />
 
                 <FeatureCard
-                    title="Cancer Screening"
+                    title="Nutrition Advice"
                     image='https://www.ayushmanhhs.in/wp-content/uploads/2024/05/Cancer-Screening-1-612x321.jpg'
-                    description="Personalized cancer screening recommendations based on your age and health data."
+                    description="Personalized food suggestions tailored to your anemia type, helping you improve your health through smart nutrition choices."
                     buttonTitle="Get Screening"
                     onPress={() => navigation.navigate('Predictions')}
                 />

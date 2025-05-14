@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,23 +5,33 @@ import { Icon } from 'react-native-elements';
 import { View, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 // Pages
-import EntryScreen from './Pages/EntryScreen';
-import LoginPage from './Pages/LoginPage';
-import RegisterPage from './Pages/RegisterPage';
-import ForgotPasswordPage from './Pages/ForgotPasswordPage';
-import CreatePasswordPage from './Pages/CreatePasswordPage';
+
+//Auth Pages
+import EntryScreen from './Pages/authPages/EntryScreen';
+import LoginPage from './Pages/authPages/LoginPage';
+import RegisterPage from './Pages/authPages/RegisterPage';
+import ForgotPasswordPage from './Pages/authPages/ForgotPasswordPage';
+import CreatePasswordPage from './Pages/authPages/CreatePasswordPage';
+import VerifyOTPPage from './Pages/authPages/VerifyOTPPage';
+
+//Useless Pages
+import SymptomsInputPage from './Pages/uselessPages/SymptomsInputPage';
+import RetinaPredictionPage from './Pages/uselessPages/RetinaPredictionPage';
+import BloodReportPredictionPage from './Pages/uselessPages/BloodReportPredictionPage';
+import PredictionPage from './Pages/uselessPages/PredictionPage';
+
+//Profile Pages
+import ProfilePage from './Pages/profilePages/ProfilePage';
+import HealthProfilePage from './Pages/profilePages/HealthProfilePage';
+import ProfileEditPage from './Pages/profilePages/ProfileEditPage';
+
 import HomePage from './Pages/HomePage';
-import PredictionPage from './Pages/PredictionPage';
-import ProfilePage from './Pages/ProfilePage';
-import HealthProfilePage from './Pages/HealthProfilePage';
-import HealthTrackingPage from './Pages/HealthTrackingPage';
-import ProfileEditPage from './Pages/ProfileEditPage';
-import SymptomsInputPage from './Pages/SymptomsInputPage';
-import RetinaPredictionPage from './Pages/RetinaPredictionPage';
-import VerifyOTPPage from './Pages/VerifyOTPPage';
-import BloodReportPredictionPage from './Pages/BloodReportPredictionPage';
 import AnemiaPredictionPage from './Pages/AnemiaPredictionPage';
+
+// Import ApiProvider
+import { ApiProvider } from './context/ApiContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,15 +84,6 @@ function MainTabs() {
       />
 
       <Tab.Screen
-        name="Health Tracking"
-        component={HealthTrackingPage}
-        options={{
-          tabBarIcon: ({ color }) => <Icon name="heartbeat" type="font-awesome" color={color} />,
-          headerShown: false
-        }}
-      />
-
-      <Tab.Screen
         name="Profile"
         component={ProfilePage}
         options={{
@@ -97,97 +97,95 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Entry"
-        screenOptions={{
-          headerStyle: { backgroundColor: '#211C84' },
-          headerTintColor: '#fff',
-          headerTitleAlign: 'center',
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 22 },
-          headerBackTitleVisible: false,
-        }}
-      >
-        {/* Entry Screen */}
-        <Stack.Screen
-          name="Entry"
-          component={EntryScreen}
-          options={{ title: '', headerStyle: { backgroundColor: '#211C84' } }}
-        />
-
-        {/* Login Screen */}
-        <Stack.Screen name="Login" component={LoginPage} options={{ title: 'Login' }} />
-
-        {/* Register Screen */}
-        <Stack.Screen name="Register" component={RegisterPage} options={{ title: 'Register' }} />
-
-        {/* Forgot Password Screen */}
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordPage} options={{ title: 'Forgot Password' }} />
-
-        {/* Create Password Screen */}
-        <Stack.Screen name="CreatePassword" component={CreatePasswordPage} options={{ title: 'Create Password' }} />
-
-        {/* Home Screen (Alt Menü Entegre Edildi) */}
-        <Stack.Screen
-          name="Home"
-          component={MainTabs}   // Alt menü burada entegre edildi
-          options={({ navigation }) => ({
-            headerTitle: 'Home',
-            headerTitleAlign: 'left',
+    <ApiProvider> {/* ApiContext Provider ile sarıyoruz */}
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Entry"
+          screenOptions={{
             headerStyle: { backgroundColor: '#211C84' },
             headerTintColor: '#fff',
-            headerRight: () => (
-              <View style={{ flexDirection: 'row', marginRight: 15 }}>
-                {/* Profile İkonu */}
-                <Icon
-                  name="user"
-                  type="font-awesome"
-                  color="#fff"
-                  containerStyle={{ marginRight: 20 }}
-                  onPress={() => navigation.navigate('Profile')}
-                />
+            headerTitleAlign: 'center',
+            headerTitleStyle: { fontWeight: 'bold', fontSize: 22 },
+            headerBackTitleVisible: false,
+          }}
+        >
+          {/* Entry Screen */}
+          <Stack.Screen
+            name="Entry"
+            component={EntryScreen}
+            options={{ title: '', headerStyle: { backgroundColor: '#211C84' } }}
+          />
 
-                {/* Logout İkonu */}
-                <Icon
-                  name="sign-out"
-                  type="font-awesome"
-                  color="#fff"
-                  containerStyle={{ marginRight: 15 }}
-                  onPress={() => handleLogout(navigation)}
-                />
-              </View>
-            ),
-          })}
-        />
+          {/* Login Screen */}
+          <Stack.Screen name="Login" component={LoginPage} options={{ title: 'Login' }} />
 
-        {/* Prediction Screen */}
-        <Stack.Screen name="Predictions" component={PredictionPage} options={{ title: 'Predictions' }} />
+          {/* Register Screen */}
+          <Stack.Screen name="Register" component={RegisterPage} options={{ title: 'Register' }} />
 
-        {/* Profile Screen */}
-        <Stack.Screen name="Profile" component={ProfilePage} options={{ title: 'Profile' }} />
+          {/* Forgot Password Screen */}
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordPage} options={{ title: 'Forgot Password' }} />
 
-        {/* HealthProfile Screen */}
-        <Stack.Screen name="HealthProfile" component={HealthProfilePage} options={{ title: 'Health Profile' }} />
+          {/* Create Password Screen */}
+          <Stack.Screen name="CreatePassword" component={CreatePasswordPage} options={{ title: 'Create Password' }} />
 
-        {/* Profile editing Screen */}
-        <Stack.Screen name="ProfileEdit" component={ProfileEditPage} options={{ title: 'Profile Edit' }} />
+          {/* Home Screen (Alt Menü Entegre Edildi) */}
+          <Stack.Screen
+            name="Home"
+            component={MainTabs}   // Alt menü burada entegre edildi
+            options={({ navigation }) => ({
+              headerTitle: 'Home',
+              headerTitleAlign: 'left',
+              headerStyle: { backgroundColor: '#211C84' },
+              headerTintColor: '#fff',
+              headerRight: () => (
+                <View style={{ flexDirection: 'row', marginRight: 15 }}>
+                  {/* Profile İkonu */}
+                  <Icon
+                    name="user"
+                    type="font-awesome"
+                    color="#fff"
+                    containerStyle={{ marginRight: 20 }}
+                    onPress={() => navigation.navigate('Profile')}
+                  />
 
-        {/* Health Tracking Screen */}
-        <Stack.Screen name="HealthTracking" component={HealthTrackingPage} options={{ title: 'Health Tracking' }} />
+                  {/* Logout İkonu */}
+                  <Icon
+                    name="sign-out"
+                    type="font-awesome"
+                    color="#fff"
+                    containerStyle={{ marginRight: 15 }}
+                    onPress={() => handleLogout(navigation)}
+                  />
+                </View>
+              ),
+            })}
+          />
 
-        <Stack.Screen name="SymptomsInputPage" component={SymptomsInputPage} options={{ title: 'Symptoms Checker' }} />
-        <Stack.Screen name="BloodReportPrediction" component={BloodReportPredictionPage} options={{ title: 'BloodReportPredictionPage Checker' }} />
+          {/* Prediction Screen */}
+          <Stack.Screen name="Predictions" component={PredictionPage} options={{ title: 'Predictions' }} />
 
-        <Stack.Screen name="AnemiaPrediction" component={AnemiaPredictionPage} options={{ title: 'Anemia Prediction' }} />
+          {/* Profile Screen */}
+          <Stack.Screen name="Profile" component={ProfilePage} options={{ title: 'Profile' }} />
 
-        <Stack.Screen
-          name="RetinaPrediction"
-          component={RetinaPredictionPage}
-          options={{ title: 'Retina Prediction' }}
-        />
-        <Stack.Screen name="verifyOTP" component={VerifyOTPPage} options={{ title: 'Verify OTP' }} />
+          {/* HealthProfile Screen */}
+          <Stack.Screen name="HealthProfile" component={HealthProfilePage} options={{ title: 'Health Profile' }} />
 
-      </Stack.Navigator>
-    </NavigationContainer>
+          {/* Profile editing Screen */}
+          <Stack.Screen name="ProfileEdit" component={ProfileEditPage} options={{ title: 'Profile Edit' }} />
+
+          <Stack.Screen name="SymptomsInputPage" component={SymptomsInputPage} options={{ title: 'Symptoms Checker' }} />
+          <Stack.Screen name="BloodReportPrediction" component={BloodReportPredictionPage} options={{ title: 'BloodReportPredictionPage Checker' }} />
+
+          <Stack.Screen name="AnemiaPrediction" component={AnemiaPredictionPage} options={{ title: 'Anemia Prediction' }} />
+
+          <Stack.Screen
+            name="RetinaPrediction"
+            component={RetinaPredictionPage}
+            options={{ title: 'Retina Prediction' }}
+          />
+          <Stack.Screen name="verifyOTP" component={VerifyOTPPage} options={{ title: 'Verify OTP' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ApiProvider>
   );
 }

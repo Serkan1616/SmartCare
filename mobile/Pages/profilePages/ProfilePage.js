@@ -4,10 +4,13 @@ import { Avatar, Card } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
+import { useApi } from '../../context/ApiContext';  // import the context
+
 
 export default function ProfilePage({ navigation }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { apiUrl } = useApi();  // Get the apiUrl from the context
 
     useFocusEffect(
         React.useCallback(() => {
@@ -24,7 +27,7 @@ export default function ProfilePage({ navigation }) {
                 return;
             }
 
-            const response = await fetch('http://192.168.63.138:5000/api/profile', {
+            const response = await fetch(`${apiUrl}/api/profile`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

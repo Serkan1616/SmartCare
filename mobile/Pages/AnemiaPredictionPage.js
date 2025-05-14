@@ -7,10 +7,12 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Card, Icon } from 'react-native-elements';
 import axios from 'axios';
+import { useApi } from '../context/ApiContext';  // import the context
 
 const AnemiaPredictionPage = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { apiUrl } = useApi();  // Get the apiUrl from the context
 
     // Kullanıcıdan giriş tipi seçmesini iste
     const chooseInputMethod = () => {
@@ -83,7 +85,7 @@ const AnemiaPredictionPage = () => {
                 type: selectedFile.mimeType || 'image/jpeg',
             });
 
-            const response = await axios.post('http://192.168.63.138:8000/anemia-predict-from-pdf', formData, {
+            const response = await axios.post(`${apiUrl}/anemia-predict-from-pdf`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
