@@ -12,14 +12,14 @@ from pdf2image import convert_from_bytes
 # FastAPI uygulaması oluşturma
 app = FastAPI()
 
-# Mevcut Model Yükleme
-loaded_health_model = joblib.load("log_reg_model.pkl")
+# # Mevcut Model Yükleme
+# loaded_health_model = joblib.load("log_reg_model.pkl")
 
-try:
-    loaded_retina_model = load_model("cnn_model.h5")
-    print(" Model başarıyla yüklendi.")
-except Exception as e:
-    print(f" Model yüklenirken hata oluştu: {e}")
+# try:
+#     loaded_retina_model = load_model("cnn_model.h5")
+#     print(" Model başarıyla yüklendi.")
+# except Exception as e:
+#     print(f" Model yüklenirken hata oluştu: {e}")
 
 
 # Health Model Input
@@ -42,99 +42,99 @@ def preprocess_image(image) -> np.ndarray:
 
 
 
-# 🟢 Mevcut Model Prediction Endpoint
-@app.post("/predict")
-async def predict_health(data: PredictionInput):
-    try:
-        input_data = np.array([[data.gender, data.age, data.hypertension,
-                                data.heart_disease, data.work_type,
-                                data.avg_glucose_level, data.bmi]])
+# # 🟢 Mevcut Model Prediction Endpoint
+# @app.post("/predict")
+# async def predict_health(data: PredictionInput):
+#     try:
+#         input_data = np.array([[data.gender, data.age, data.hypertension,
+#                                 data.heart_disease, data.work_type,
+#                                 data.avg_glucose_level, data.bmi]])
 
-        prediction = loaded_health_model.predict(input_data)
-        prediction_proba = loaded_health_model.predict_proba(input_data)
+#         prediction = loaded_health_model.predict(input_data)
+#         prediction_proba = loaded_health_model.predict_proba(input_data)
 
-        return {
-            "prediction": int(prediction[0]),
-            "confidence": round(prediction_proba[0][1] * 100, 2)
-        }
-    except Exception as e:
-        return {"error": str(e)}
+#         return {
+#             "prediction": int(prediction[0]),
+#             "confidence": round(prediction_proba[0][1] * 100, 2)
+#         }
+#     except Exception as e:
+#         return {"error": str(e)}
 
-@app.post("/retina-predict")
-async def predict_retina(file: UploadFile = File(...)):
-    try:
-        img_array = preprocess_image(file.file)
+# @app.post("/retina-predict")
+# async def predict_retina(file: UploadFile = File(...)):
+#     try:
+#         img_array = preprocess_image(file.file)
 
-        prediction = loaded_retina_model.predict(img_array)
+#         prediction = loaded_retina_model.predict(img_array)
 
-        # 🔹 Model çıktısındaki en yüksek olasılığı bulma
-        categories = ['CNV', 'DME', 'DRUSEN', 'NORMAL']
-        predicted_class = np.argmax(prediction[0])
-        confidence = round(np.max(prediction[0]) * 100, 2)
+#         # 🔹 Model çıktısındaki en yüksek olasılığı bulma
+#         categories = ['CNV', 'DME', 'DRUSEN', 'NORMAL']
+#         predicted_class = np.argmax(prediction[0])
+#         confidence = round(np.max(prediction[0]) * 100, 2)
 
-        return {
-            "prediction": categories[predicted_class],
-            "confidence": confidence
-        }
+#         return {
+#             "prediction": categories[predicted_class],
+#             "confidence": confidence
+#         }
 
-    except Exception as e:
-        return {"error": str(e)}
+#     except Exception as e:
+#         return {"error": str(e)}
     
     
-@app.post("/ocr-predict")
-async def ocr_predict(file: UploadFile = File(...)):
-    try:
-        # 1. Görseli al ve OCR yap
-        image = Image.open(io.BytesIO(await file.read()))
-        text = pytesseract.image_to_string(image)
+# @app.post("/ocr-predict")
+# async def ocr_predict(file: UploadFile = File(...)):
+#     try:
+#         # 1. Görseli al ve OCR yap
+#         image = Image.open(io.BytesIO(await file.read()))
+#         text = pytesseract.image_to_string(image)
 
-        print("\n🧾 OCR Çıkan Metin:\n", text)
+#         print("\n🧾 OCR Çıkan Metin:\n", text)
 
-        # 2. Değerleri regex ile ayıkla
-        def extract(pattern):
-            match = re.search(rf"{pattern}[:\s\-]*([\d.]+)", text, re.IGNORECASE)
-            if match and match.group(1):
-                try:
-                    # Virgül varsa nokta ile değiştir (Türkçe sayılar için)
-                    value = match.group(1).replace(',', '.')
-                    return float(match.group(1))
-                except ValueError:
-                    return None
-            return None
+#         # 2. Değerleri regex ile ayıkla
+#         def extract(pattern):
+#             match = re.search(rf"{pattern}[:\s\-]*([\d.]+)", text, re.IGNORECASE)
+#             if match and match.group(1):
+#                 try:
+#                     # Virgül varsa nokta ile değiştir (Türkçe sayılar için)
+#                     value = match.group(1).replace(',', '.')
+#                     return float(match.group(1))
+#                 except ValueError:
+#                     return None
+#             return None
 
-        # 3. Tahmin için gerekli tüm değerleri topla
-        input_data = {
-    "WBC": extract("WBC"),
-    "RBC": extract("RBC"),
-    "Hemoglobin": extract("HGB|Hemoglobin"),
-    "Platelets": extract("PLT|Platelets"),
-    "Neutrophils": extract("NEUT|NEU|Neutrophils"),
-    "Lymphocytes": extract("LYMPH|LYM|Lymphocytes"),
-    "Monocytes": extract("MONO|MON|Monocytes"),
-    "Eosinophils": extract("EOS|Eosinophils"),
-    "Basophils": extract("BASO|BAS|Basophils"),
-}
+#         # 3. Tahmin için gerekli tüm değerleri topla
+#         input_data = {
+#     "WBC": extract("WBC"),
+#     "RBC": extract("RBC"),
+#     "Hemoglobin": extract("HGB|Hemoglobin"),
+#     "Platelets": extract("PLT|Platelets"),
+#     "Neutrophils": extract("NEUT|NEU|Neutrophils"),
+#     "Lymphocytes": extract("LYMPH|LYM|Lymphocytes"),
+#     "Monocytes": extract("MONO|MON|Monocytes"),
+#     "Eosinophils": extract("EOS|Eosinophils"),
+#     "Basophils": extract("BASO|BAS|Basophils"),
+# }
 
 
-        # 4. Hangi değerler eksik?
-        missing = [k for k, v in input_data.items() if v is None]
+#         # 4. Hangi değerler eksik?
+#         missing = [k for k, v in input_data.items() if v is None]
 
-        # 5. Geri dön
-        if missing:
-            return {
-                "error": f"Could not extract the following fields: {', '.join(missing)}",
-                "ocr_text": text,
-                "input_data": input_data
-            }
+#         # 5. Geri dön
+#         if missing:
+#             return {
+#                 "error": f"Could not extract the following fields: {', '.join(missing)}",
+#                 "ocr_text": text,
+#                 "input_data": input_data
+#             }
 
-        return {
-            "message": "Values extracted successfully",
-            "ocr_text": text,
-            "input_data": input_data
-        }
+#         return {
+#             "message": "Values extracted successfully",
+#             "ocr_text": text,
+#             "input_data": input_data
+#         }
 
-    except Exception as e:
-        return {"error": str(e)}
+#     except Exception as e:
+#         return {"error": str(e)}
     
     
     
@@ -208,7 +208,7 @@ async def anemia_predict_from_pdf(file: UploadFile = File(...)):
             "PCT": extract("PCT"),
         }
         
-        print ("\n🧾 OCR Çıkan Metin:\n", text)
+        
 
         # 7. Eksik değer kontrolü
         missing = [k for k, v in extracted_input.items() if v is None]

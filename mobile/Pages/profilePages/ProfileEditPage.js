@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useApi } from '../../context/ApiContext';  // import the context
 
 export default function ProfileEditPage({ navigation }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const { apiUrl } = useApi();  // Get the apiUrl from the context
+    
 
     const handleUpdateProfile = async () => {
         const token = await AsyncStorage.getItem('userToken');
@@ -16,7 +19,7 @@ export default function ProfileEditPage({ navigation }) {
             return;
         }
 
-        const response = await fetch('http://192.168.63.138:5000/api/profile/update-profile', {
+        const response = await fetch(`${apiUrl}/api/profile/update-profile`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,

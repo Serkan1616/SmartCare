@@ -33,12 +33,10 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: "Invalid email or password." });
         }
 
-        // 🟠 Kullanıcının doğrulanıp doğrulanmadığını kontrol et
-        if (!user.isVerified) {
-            return res.status(400).json({ msg: "Please verify your account first." });
-        }
+        // if (!user.isVerified) {
+        //     return res.status(400).json({ msg: "Please verify your account first." });
+        // }
 
-        // 🔐 Şifre Doğrulama (Log Ekledim)
         const isMatch = await bcrypt.compare(password, user.password);
         console.log(`🔎 Girilen şifre doğru mu?: ${isMatch}`);
 
@@ -47,7 +45,6 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: "Invalid email or password." });
         }
 
-        // 🟢 Token Oluşturma
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         console.log('✅ Başarılı giriş yapıldı.');
@@ -67,6 +64,7 @@ exports.login = async (req, res) => {
 };
 
 
+
 exports.register = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -84,29 +82,20 @@ exports.register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const otp = generateOTP();
 
         const newUser = new User({
             name,
             email,
             password: hashedPassword,
-            otp,
-            otpExpires: Date.now() + 300000 // OTP 5 dakika geçerli
+            isVerified: true  // ✅ Doğrudan doğrulanmış olarak kaydet
         });
 
         await newUser.save();
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Account Verification Code',
-            html: `<h2>Welcome to SmartCare!</h2>
-                   <p>Your verification code is: <b>${otp}</b></p>
-                   <p>This code will expire in 5 minutes.</p>`
-        });
+        // await transporter.sendMail({ ... });  // ❌ OTP gönderimini devre dışı bıraktık
 
-        console.log('✅ Kayıt başarılı ve OTP gönderildi.');
-        res.status(200).json({ msg: "Verification code sent successfully." });
+        console.log('✅ Kayıt başarılı. (OTP gönderilmedi)');
+        res.status(200).json({ msg: "User registered successfully." });
 
     } catch (error) {
         console.error("❌ Register Error:", error);

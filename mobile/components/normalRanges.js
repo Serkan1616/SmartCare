@@ -1,0 +1,16 @@
+export const normalRanges = {
+  WBC: { min: 4.5, max: 11.0 },
+  LYMp: { min: 20, max: 40 },
+  NEUTp: { min: 40, max: 70 },
+  LYMn: { min: 1.0, max: 4.0 },
+  NEUTn: { min: 2.0, max: 7.0 },
+  RBC: { min: 4.2, max: 5.9 },
+  HGB: { min: 13.5, max: 17.5 },
+  HCT: { min: 41.0, max: 53.0 },
+  MCV: { min: 80, max: 100 },
+  MCH: { min: 27, max: 33 },
+  MCHC: { min: 32, max: 36 },
+  PLT: { min: 150, max: 450 },
+  PDW: { min: 9, max: 17 },
+  PCT: { min: 0.19, max: 0.39 },
+};

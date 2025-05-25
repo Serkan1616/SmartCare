@@ -7,7 +7,7 @@ export default function PredictionPage({ navigation }) {
         {
             id: '1',
             title: "Retina Cancer Prediction",
-            image: require('../assets/retina_cancer.jpg'),
+            image: require('../../assets/retina_cancer.jpg'),
         }
     ];
 
