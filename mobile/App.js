@@ -19,7 +19,6 @@ import VerifyOTPPage from "./Pages/authPages/VerifyOTPPage";
 import SymptomsInputPage from "./Pages/uselessPages/SymptomsInputPage";
 import RetinaPredictionPage from "./Pages/uselessPages/RetinaPredictionPage";
 import BloodReportPredictionPage from "./Pages/uselessPages/BloodReportPredictionPage";
-import PredictionPage from "./Pages/uselessPages/PredictionPage";
 
 //Profile Pages
 import ProfilePage from "./Pages/profilePages/ProfilePage";
@@ -29,6 +28,8 @@ import ProfileEditPage from "./Pages/profilePages/ProfileEditPage";
 import HomePage from "./Pages/HomePage";
 import AnemiaPredictionPage from "./Pages/AnemiaPredictionPage";
 import AnalysisPage from "./Pages/AnalysisPage";
+import PredictionPage from "./Pages/uselessPages/PredictionPage";
+import MealPlanPage from "./Pages/MealPlanPage";
 
 // Import ApiProvider
 import { ApiProvider } from "./context/ApiContext";
@@ -149,7 +150,7 @@ export default function App() {
           {/* Home Screen (Alt Menü Entegre Edildi) */}
           <Stack.Screen
             name="Home"
-            component={MainTabs} // Alt menü burada entegre edildi
+            component={MainTabs}
             options={({ navigation }) => ({
               headerTitle: "Home",
               headerTitleAlign: "left",
@@ -157,7 +158,6 @@ export default function App() {
               headerTintColor: "#fff",
               headerRight: () => (
                 <View style={{ flexDirection: "row", marginRight: 15 }}>
-                  {/* Profile İkonu */}
                   <Icon
                     name="user"
                     type="font-awesome"
@@ -165,8 +165,6 @@ export default function App() {
                     containerStyle={{ marginRight: 20 }}
                     onPress={() => navigation.navigate("Profile")}
                   />
-
-                  {/* Logout İkonu */}
                   <Icon
                     name="sign-out"
                     type="font-awesome"
@@ -177,13 +175,6 @@ export default function App() {
                 </View>
               ),
             })}
-          />
-
-          {/* Prediction Screen */}
-          <Stack.Screen
-            name="Predictions"
-            component={PredictionPage}
-            options={{ title: "Predictions" }}
           />
 
           {/* Profile Screen */}
@@ -225,9 +216,9 @@ export default function App() {
           />
 
           <Stack.Screen
-            name="RetinaPrediction"
-            component={RetinaPredictionPage}
-            options={{ title: "Retina Prediction" }}
+            name="PredictionPage"
+            component={PredictionPage}
+            options={{ title: "Prediction Results" }}
           />
           <Stack.Screen
             name="verifyOTP"
@@ -238,6 +229,11 @@ export default function App() {
             name="Analysis"
             component={AnalysisPage}
             options={{ title: "Report Analysis" }}
+          />
+          <Stack.Screen
+            name="MealPlan"
+            component={MealPlanPage}
+            options={{ title: "MealPlanPage" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

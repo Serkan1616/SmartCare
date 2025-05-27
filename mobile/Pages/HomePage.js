@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components/native";
-import { ScrollView, TouchableOpacity, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { Calendar } from "react-native-calendars";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -59,47 +59,6 @@ const SectionTitle = styled.Text`
   color: #333;
 `;
 
-const HorizontalScroll = styled.ScrollView`
-  margin-bottom: 20px;
-`;
-
-const DatePill = styled.View`
-  background-color: ${(props) => (props.active ? "#1dd2d8" : "#fff")};
-  padding: 10px 14px;
-  border-radius: 12px;
-  margin-right: 10px;
-  border: 1px solid #1dd2d8;
-`;
-
-const DatePillText = styled.Text`
-  color: ${(props) => (props.active ? "#fff" : "#1dd2d8")};
-  font-weight: bold;
-  font-size: 14px;
-`;
-
-const ScheduleCard = styled.View`
-  background-color: white;
-  padding: 16px;
-  margin-bottom: 10px;
-  border-radius: 12px;
-  shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-radius: 6px;
-  elevation: 2;
-`;
-
-const ScheduleDate = styled.Text`
-  font-size: 14px;
-  color: #888;
-`;
-
-const ScheduleDetail = styled.Text`
-  font-size: 15px;
-  font-weight: bold;
-  color: #1dd2d8;
-  margin-top: 4px;
-`;
-
 const CardRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
@@ -109,7 +68,11 @@ const CardRow = styled.View`
 
 const FeatureCard = ({ title, image, description, buttonTitle, onPress }) => (
   <FeatureCardContainer>
-    <FeatureImage source={{ uri: image }} />
+    <ImageWrapper>
+      <FeatureImage
+        source={typeof image === "string" ? { uri: image } : image}
+      />
+    </ImageWrapper>
     <FeatureTitle>{title}</FeatureTitle>
     <FeatureDescription>{description}</FeatureDescription>
     <FeatureButton onPress={onPress}>
@@ -128,10 +91,16 @@ const FeatureCardContainer = styled.View`
 `;
 
 const FeatureImage = styled.Image`
-  width: 100%;
+  width: 100px;
   height: 100px;
-  border-radius: 8px;
+  border-radius: 50px;
   margin-bottom: 8px;
+`;
+
+const ImageWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 `;
 
 const FeatureTitle = styled.Text`
@@ -160,8 +129,14 @@ const FeatureButtonText = styled.Text`
   font-size: 13px;
 `;
 
+const SelectedDateText = styled.Text`
+  font-size: 15px;
+  color: #1dd2d8;
+  margin-top: 10px;
+`;
+
 export default function HomePage({ navigation }) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
 
   return (
     <Container>
@@ -187,34 +162,35 @@ export default function HomePage({ navigation }) {
         </IconGroup>
       </TopBar>
 
-      <SectionTitle>Upcoming Schedule</SectionTitle>
+      <SectionTitle>Schedule</SectionTitle>
 
-      <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
-        {["9 MON", "10 TUE", "11 WED", "12 THU", "13 FRI", "14 SAT"].map(
-          (date, i) => (
-            <DatePill key={i} active={i === 2}>
-              <DatePillText active={i === 2}>{date}</DatePillText>
-            </DatePill>
-          )
-        )}
-      </HorizontalScroll>
+      <Calendar
+        onDayPress={(day) => {
+          setSelectedDate(day.dateString);
+        }}
+        markedDates={{
+          [selectedDate]: {
+            selected: true,
+            selectedColor: "#1dd2d8",
+          },
+        }}
+        theme={{
+          selectedDayBackgroundColor: "#1dd2d8",
+          todayTextColor: "#1dd2d8",
+          arrowColor: "#1dd2d8",
+        }}
+      />
 
-      <ScheduleCard>
-        <ScheduleDate>11 Month - Wednesday - Today</ScheduleDate>
-        <ScheduleDetail>10:00 am — Dr. Olivia Turner</ScheduleDetail>
-      </ScheduleCard>
-
-      <ScheduleCard>
-        <ScheduleDate>16 Month - Monday</ScheduleDate>
-        <ScheduleDetail>08:00 am — Dr. Alexander Bennett</ScheduleDetail>
-      </ScheduleCard>
+      {selectedDate && (
+        <SelectedDateText>Selected Date: {selectedDate}</SelectedDateText>
+      )}
 
       <SectionTitle>Features</SectionTitle>
 
       <CardRow>
         <FeatureCard
           title="Health Profile"
-          image="https://ddagal3o2o4a.cloudfront.net/assets/icon-health-profile-4aae4aa1f94c40f08331b46e356a0c69e597f3aea7f08b55381712a13e58cf9d.png"
+          image={require("../assets/HealthProfile.png")}
           description="Create your health profile to track your personal health data."
           buttonTitle="Create Health Profile"
           onPress={() => navigation.navigate("HealthProfile")}
@@ -222,7 +198,7 @@ export default function HomePage({ navigation }) {
 
         <FeatureCard
           title="Anemia Prediction"
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-C524dbyEgoX4VeSZfPLGVqiA9BOloNOegw&s"
+          image={require("../assets/AnemiaPrediction.png")}
           description="Upload your hemogram report to detect anemia with AI."
           buttonTitle="Check Your Risk"
           onPress={() => navigation.navigate("AnemiaPrediction")}
@@ -232,7 +208,7 @@ export default function HomePage({ navigation }) {
       <CardRow>
         <FeatureCard
           title="Hemogram Statistics"
-          image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJYMJZ1yXpN3zmGfJLCb9kocHinLtXVezkYQ&s"
+          image={require("../assets/Hemogram.png")}
           description="Track your hemogram values over time."
           buttonTitle="Track Health"
           onPress={() => navigation.navigate("Analysis")}
@@ -240,7 +216,7 @@ export default function HomePage({ navigation }) {
 
         <FeatureCard
           title="Nutrition Advice"
-          image="https://www.ayushmanhhs.in/wp-content/uploads/2024/05/Cancer-Screening-1-612x321.jpg"
+          image={require("../assets/NutritionAdvice.png")}
           description="Smart food suggestions based on anemia type."
           buttonTitle="Get Screening"
           onPress={() => navigation.navigate("Predictions")}

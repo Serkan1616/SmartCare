@@ -24,6 +24,7 @@ const AnalyzeButton = styled.TouchableOpacity`
   padding: 12px 20px;
   border-radius: 8px;
   margin-top: 3px;
+  margin-bottom: 40px;
   align-self: center;
 `;
 
@@ -47,11 +48,6 @@ const AnemiaReportList = () => {
       const feature = selectedFeatures[0];
 
       const featureValues = reports.map((report) => report.features?.[feature]);
-
-      console.log("Sending data to backend:", {
-        feature,
-        values: featureValues,
-      });
 
       const response = await fetch(`${apiUrl}/api/analyze-ai`, {
         method: "POST",
@@ -131,13 +127,13 @@ const AnemiaReportList = () => {
                   />
                 </>
               )}
-              <AnalyzeButton onPress={analyzeWithAI}>
-                <AnalyzeButtonText>Analyze with AI</AnalyzeButtonText>
-              </AnalyzeButton>
 
               <NormalRangeDisplay featureKey={selectedFeatures[0]} />
 
               {/* ANALYZE WITH AI BUTONU */}
+              <AnalyzeButton onPress={analyzeWithAI}>
+                <AnalyzeButtonText>Analyze with AI</AnalyzeButtonText>
+              </AnalyzeButton>
             </>
           )}
 
