@@ -116,7 +116,7 @@ const AnemiaPredictionPage = () => {
       });
 
       const response = await axios.post(
-        `http://192.168.118.138:8000/anemia-predict-from-pdf`,
+        `http://192.168.1.8:8000/anemia-predict-from-pdf`,
         formData,
         {
           headers: {
@@ -129,6 +129,9 @@ const AnemiaPredictionPage = () => {
         Alert.alert("Error", response.data.error);
       } else {
         const { prediction, input_values } = response.data;
+
+        // Tahmin sonucunu yeni sayfaya yolla
+        navigation.navigate("PredictionPage", { prediction, input_values });
 
         Alert.alert(
           "Prediction Result",
@@ -153,26 +156,32 @@ const AnemiaPredictionPage = () => {
   return (
     <Container>
       <StyledCard>
-        <InfoTitle> What is Anemia?</InfoTitle>
+        <InfoTitle>🩸 Understanding Anemia</InfoTitle>
         <InfoText>
-          Anemia is a condition where the blood lacks enough healthy red blood
-          cells or hemoglobin. It leads to fatigue, weakness, and shortness of
-          breath. There are many types such as:
-          {"\n\n"}🔸 Iron Deficiency Anemia
-          {"\n"}🔸 Leukemia
-          {"\n"}🔸 Leukemia with Thrombocytopenia
-          {"\n"}🔸 Macrocytic Anemia
-          {"\n"}🔸 Normocytic Hypochromic Anemia
-          {"\n"}🔸 Normocytic Normochromic Anemia
-          {"\n"}🔸 Other Microcytic Anemia
-          {"\n"}🔸 Thrombocytopenia
-          {"\n\n"}Diagnosis is based on CBC test values such as: Hemoglobin
-          (HGB), RBC, WBC, Platelets (PLT), MCV, MCH, and MCHC.
+          {"\n"}Anemia is a medical condition where your blood doesn't have
+          enough healthy red blood cells or hemoglobin. This can cause symptoms
+          like:
+          {"\n\n"} • Fatigue and weakness
+          {"\n"} • Pale skin
+          {"\n"} • Shortness of breath
+          {"\n"} • Dizziness or headaches
+          {"\n\n"}
+          <Text style={{ fontWeight: "bold" }}>🧪 Common Types Include:</Text>
+          {"\n"} 🔸 Iron Deficiency Anemia
+          {"\n"} 🔸 Leukemia
+          {"\n"} 🔸 Leukemia with Thrombocytopenia
+          {"\n"} 🔸 Macrocytic Anemia
+          {"\n"} 🔸 Normocytic Hypochromic Anemia
+          {"\n"} 🔸 Normocytic Normochromic Anemia
+          {"\n"} 🔸 Other Microcytic Anemia
+          {"\n"} 🔸 Thrombocytopenia
+          {"\n\n"}📋 Diagnosis is based on CBC tests including:
+          {"\n"}Hemoglobin (HGB), RBC, WBC, Platelets (PLT), MCV, MCH, MCHC.
         </InfoText>
 
         <ImageWrapper>
-          <StyledImage source={require("../assets/kan.jpg")} />
-          <ImageNote>Example blood analysis illustration</ImageNote>
+          <StyledImage source={require("../assets/Anemia.png")} />
+          <ImageNote></ImageNote>
         </ImageWrapper>
       </StyledCard>
 
@@ -236,13 +245,12 @@ const SectionHeader = styled.Text`
 const InfoTitle = styled.Text`
   font-size: 20px;
   font-weight: bold;
-  color: #008b9a; /* Tema rengine biraz daha koyu alternatif */
-  margin-bottom: 10px;
+  color: #1dd2d8;
 `;
 
 const InfoText = styled.Text`
-  font-size: 16px;
-  color: #333; /* Daha koyu gri - okunabilirlik için */
+  font-size: 14px;
+  color: #333;
   line-height: 22px;
 `;
 

@@ -149,7 +149,7 @@ export default function App() {
           {/* Home Screen (Alt Menü Entegre Edildi) */}
           <Stack.Screen
             name="Home"
-            component={MainTabs} // Alt menü burada entegre edildi
+            component={MainTabs}
             options={({ navigation }) => ({
               headerTitle: "Home",
               headerTitleAlign: "left",
@@ -157,7 +157,6 @@ export default function App() {
               headerTintColor: "#fff",
               headerRight: () => (
                 <View style={{ flexDirection: "row", marginRight: 15 }}>
-                  {/* Profile İkonu */}
                   <Icon
                     name="user"
                     type="font-awesome"
@@ -165,8 +164,6 @@ export default function App() {
                     containerStyle={{ marginRight: 20 }}
                     onPress={() => navigation.navigate("Profile")}
                   />
-
-                  {/* Logout İkonu */}
                   <Icon
                     name="sign-out"
                     type="font-awesome"
@@ -183,7 +180,7 @@ export default function App() {
           <Stack.Screen
             name="Predictions"
             component={PredictionPage}
-            options={{ title: "Predictions" }}
+            options={{ title: "Nutrition Advice" }}
           />
 
           {/* Profile Screen */}

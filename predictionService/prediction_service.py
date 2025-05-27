@@ -4,7 +4,6 @@ import joblib
 import numpy as np
 from PIL import Image
 import io
-from tensorflow.keras.models import load_model
 import pytesseract
 import re
 from pdf2image import convert_from_bytes

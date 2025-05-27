@@ -5,7 +5,7 @@ const ApiContext = createContext();
 
 // Provider component
 export const ApiProvider = ({ children }) => {
-  const [apiUrl, setApiUrl] = useState("http://192.168.118.138:5000");
+  const [apiUrl, setApiUrl] = useState("http://192.168.1.8:5000");
 
   return (
     <ApiContext.Provider value={{ apiUrl, setApiUrl }}>
