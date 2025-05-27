@@ -116,7 +116,7 @@ const AnemiaPredictionPage = () => {
       });
 
       const response = await axios.post(
-        `http://192.168.118.138:8000/anemia-predict-from-pdf`,
+        `http://192.168.1.159:8000/anemia-predict-from-pdf`,
         formData,
         {
           headers: {

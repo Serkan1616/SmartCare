@@ -52,22 +52,17 @@ const SimpleLineChart = ({ reports, featureKeys }) => {
         ...datasets,
         {
           data: minLine,
-          color: () => "rgba(19, 171, 138, 0.8)",
+          color: () => "rgb(235, 153, 11)",
           strokeWidth: 3, // Daha kalın çizgi
-          withDots: true, // Noktaları göster
+          withDots: false, // Noktaları göster
           // Noktaların görünümünü özelleştir
-          propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#1dd2d8",
-            fill: "#1dd2d8",
-          },
+          propsForDots: {},
         },
         {
           data: maxLine,
-          color: () => "rgba(19, 171, 138, 0.8)",
+          color: () => "rgb(235, 153, 11)",
           strokeWidth: 3,
-          withDots: true,
+          withDots: false,
           propsForDots: {
             r: "6",
             strokeWidth: "2",
