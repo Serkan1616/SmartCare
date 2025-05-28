@@ -73,10 +73,10 @@ export default function HealthProfilePage({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>🩺 Personal Health Profile</Text>
+      <Text style={styles.title}> Personal Health Profile</Text>
       <Text style={styles.subtitle}>
-        {"\n"} Please fill in the details to help us provide better health
-        insights.
+        {"\n"} Please fill in the details to help us provide better Nutrition
+        Advice.
       </Text>
 
       <View style={styles.form}>
@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+    marginBottom: 40,
     backgroundColor: "#1dd2d8",
     paddingVertical: 15,
     borderRadius: 10,

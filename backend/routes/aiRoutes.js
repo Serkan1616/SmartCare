@@ -7,6 +7,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/analyze-ai", analyzeFeatureChanges);
-router.post("/meal-plan", generateMealPlan);
+router.post("/plan-meal", authMiddleware, generateMealPlan);
 
 module.exports = router;

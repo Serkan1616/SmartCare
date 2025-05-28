@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Alert, ActivityIndicator } from "react-native";
+import {
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import styled from "styled-components/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
@@ -55,6 +62,8 @@ const ProfilePage = ({ navigation }) => {
     );
   }
 
+  const { mealPlan, lastAnemiaReport, healthProfile } = user || {};
+
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -85,10 +94,69 @@ const ProfilePage = ({ navigation }) => {
           <Label>Email</Label>
           <Input editable={false} value={user?.email || ""} />
 
-          <Label>Date Of Birth</Label>
+          <Row>
+            <HalfWidthInputContainer>
+              <Label>Age</Label>
+              <Input editable={false} value={healthProfile?.age || ""} />
+            </HalfWidthInputContainer>
+            <HalfWidthInputContainer>
+              <Label>Height</Label>
+              <Input editable={false} value={healthProfile?.height || ""} />
+            </HalfWidthInputContainer>
+          </Row>
+
+          <Row>
+            <HalfWidthInputContainer>
+              <Label>Weight</Label>
+              <Input editable={false} value={healthProfile?.weight || ""} />
+            </HalfWidthInputContainer>
+            <HalfWidthInputContainer>
+              <Label>Blood Type</Label>
+              <Input editable={false} value={healthProfile?.bloodType || ""} />
+            </HalfWidthInputContainer>
+          </Row>
+
+          <Row>
+            <HalfWidthInputContainer>
+              <Label>Smoking</Label>
+              <Input editable={false} value={healthProfile?.smoking || ""} />
+            </HalfWidthInputContainer>
+            <HalfWidthInputContainer>
+              <Label>Alcohol</Label>
+              <Input editable={false} value={healthProfile?.alcohol || ""} />
+            </HalfWidthInputContainer>
+          </Row>
+
+          <Label>Medical Conditions</Label>
           <Input
             editable={false}
-            value={user?.healthProfile?.birthDate || "DD / MM / YYYY"}
+            multiline
+            value={healthProfile?.medicalConditions || ""}
+          />
+
+          <Label>Meal Plan</Label>
+          <Input
+            editable={false}
+            value={
+              mealPlan?.title
+                ? `${mealPlan.title} (created at: ${new Date(
+                    mealPlan.createdAt
+                  ).toLocaleDateString()})`
+                : "No Meal Plan Found"
+            }
+          />
+
+          <Label>Last Anemia Report</Label>
+          <Input
+            editable={false}
+            multiline
+            value={
+              lastAnemiaReport
+                ? `Result: ${lastAnemiaReport.result}\nCreated At: ${new Date(
+                    lastAnemiaReport.createdAt
+                  ).toLocaleDateString()}`
+                : "No Report Found"
+            }
           />
 
           <UpdateButton onPress={() => navigation.navigate("ProfileEdit")}>
@@ -140,12 +208,6 @@ const EditAvatarButton = styled.TouchableOpacity`
   border-radius: 20px;
 `;
 
-const Title = styled.Text`
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
-`;
-
 const FormContainer = styled.View`
   padding: 20px;
 `;
@@ -163,6 +225,15 @@ const Input = styled.TextInput`
   padding: 12px;
   font-size: 16px;
   color: #333;
+`;
+
+const Row = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const HalfWidthInputContainer = styled.View`
+  flex: 0.48;
 `;
 
 const UpdateButton = styled.TouchableOpacity`

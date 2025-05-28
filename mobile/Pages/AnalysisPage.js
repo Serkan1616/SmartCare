@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text } from "react-native";
-import { FlatList, ActivityIndicator, Alert, Dimensions } from "react-native";
+import {
+  Text,
+  Modal,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import styled from "styled-components/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useApi } from "../context/ApiContext";
@@ -34,6 +40,52 @@ const AnalyzeButtonText = styled.Text`
   font-size: 16px;
 `;
 
+const ModalBackground = styled.View`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContainer = styled.View`
+  background-color: white;
+  padding: 20px 25px;
+  border-radius: 12px;
+  width: 80%;
+  max-height: 70%;
+`;
+
+const ModalTitle = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+  color: #1dd2d8;
+  margin-bottom: 15px;
+  text-align: center;
+`;
+
+const ModalContent = styled.ScrollView`
+  margin-bottom: 20px;
+`;
+
+const ModalText = styled.Text`
+  font-size: 16px;
+  color: #333;
+  line-height: 22px;
+`;
+
+const ModalCloseButton = styled.TouchableOpacity`
+  background-color: #1dd2d8;
+  padding: 12px;
+  border-radius: 8px;
+  align-items: center;
+`;
+
+const ModalCloseButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
 const screenWidth = Dimensions.get("window").width;
 
 const AnemiaReportList = () => {
@@ -41,6 +93,10 @@ const AnemiaReportList = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState(["WBC"]);
   const { apiUrl } = useApi();
+
+  // Modal ile ilgili state
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   const analyzeWithAI = async () => {
     try {
@@ -63,13 +119,17 @@ const AnemiaReportList = () => {
 
       const data = await response.json();
       if (response.ok) {
-        Alert.alert("Analysis Result", data.analysis);
+        // Alert yerine modal göster
+        setModalMessage(data.analysis);
+        setModalVisible(true);
       } else {
-        Alert.alert("Error", data.error || "Analysis failed");
+        setModalMessage(data.error || "Analysis failed");
+        setModalVisible(true);
       }
     } catch (error) {
       console.error("AI analysis error:", error);
-      Alert.alert("Error", "Could not perform AI analysis.");
+      setModalMessage("Could not perform AI analysis.");
+      setModalVisible(true);
     }
   };
 
@@ -87,11 +147,13 @@ const AnemiaReportList = () => {
       if (response.ok) {
         setReports(data.reports || []);
       } else {
-        Alert.alert("Error", data.error || "Something went wrong");
+        setModalMessage(data.error || "Something went wrong");
+        setModalVisible(true);
       }
     } catch (error) {
       console.error("Fetch reports error:", error);
-      Alert.alert("Error", "Could not fetch reports.");
+      setModalMessage("Could not fetch reports.");
+      setModalVisible(true);
     } finally {
       setLoading(false);
     }
@@ -142,6 +204,26 @@ const AnemiaReportList = () => {
       ) : (
         <Text>No reports found.</Text>
       )}
+
+      {/* Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <ModalBackground>
+          <ModalContainer>
+            <ModalTitle>Analysis Result</ModalTitle>
+            <ModalContent>
+              <ModalText>{modalMessage}</ModalText>
+            </ModalContent>
+            <ModalCloseButton onPress={() => setModalVisible(false)}>
+              <ModalCloseButtonText>Close</ModalCloseButtonText>
+            </ModalCloseButton>
+          </ModalContainer>
+        </ModalBackground>
+      </Modal>
     </Container>
   );
 };

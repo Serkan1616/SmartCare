@@ -191,7 +191,7 @@ export default function RegisterPage({ navigation }) {
       </InputContainer>
 
       <TermsText>
-        By continuing, you agree to <Link>Terms of Use</Link> and{" "}
+        By continuing, you agree to <Link>Terms of Use</Link> and
         <Link>Privacy Policy</Link>.
       </TermsText>
 
@@ -208,7 +208,7 @@ export default function RegisterPage({ navigation }) {
       </SocialContainer>
 
       <FooterText>
-        already have an account?{" "}
+        already have an account?
         <Link onPress={() => navigation.navigate("Login")}>Log in</Link>
       </FooterText>
     </Container>

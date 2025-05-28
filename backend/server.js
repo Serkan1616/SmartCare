@@ -41,6 +41,7 @@ mongoose
 app.use("/api/profile", require("./routes/profileRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/anemia-report", require("./routes/anemiaReportRoutes"));
+app.use("/api/meal-plan", require("./routes/mealPlanRoutes"));
 app.use("/api", require("./routes/aiRoutes"));
 
 app.use("/api/health", healthRoutes);

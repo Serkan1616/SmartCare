@@ -191,7 +191,7 @@ export default function LoginPage({ navigation }) {
         </SocialContainer>
 
         <FooterText>
-          Don't have an account?{" "}
+          Don't have an account?
           <Link onPress={() => navigation.navigate("Register")}>Sign Up</Link>
         </FooterText>
       </Container>

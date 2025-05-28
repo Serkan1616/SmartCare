@@ -1,5 +1,5 @@
 const axios = require("axios");
-
+const User = require("../models/User");
 const nutritionData = {
   "Iron deficiency anemia": {
     recommendedFoods: [
@@ -164,7 +164,7 @@ const nutritionData = {
   },
 };
 
-const generateMealPlanPrompt = (diagnosis) => {
+const generateMealPlanPrompt = (diagnosis, healthProfile) => {
   const data = nutritionData[diagnosis];
 
   if (!data) {
@@ -177,8 +177,16 @@ const generateMealPlanPrompt = (diagnosis) => {
 
   return `
 The user has been diagnosed with "${diagnosis}" anemia.
+ Health Profile:
+- Age: ${healthProfile.age}
+- Height: ${healthProfile.height} cm
+- Weight: ${healthProfile.weight} kg
+- Blood Type: ${healthProfile.bloodType}
+- Smoking: ${healthProfile.smoking}
+- Alcohol: ${healthProfile.alcohol}
+- Medical Conditions: ${healthProfile.medicalConditions}
 
-Using only the following foods, meals, and drinks:
+Using the following foods, meals, and drinks and considering the user's health profile,
 
 - Foods: ${foods}
 - Example Meals: ${meals}
@@ -193,7 +201,7 @@ Create a 1-day meal plan in table format. Include:
 
 Give the meal plan directly, **without any introductory sentences or phrases such as "Here is the meal plan" or "Breakfast includes"**.
 
-After the meal plan, give a summary of whether these changes.
+After the meal plan, give a summary of whether these changes.and suggestions based on the user's health profile and anemia type if necessary.
 Respond concisely and in english. Format the meal plan simply as:
 write just paragraph with meals in order:
 Breakfast: ...
@@ -201,6 +209,7 @@ Lunch: ...
 Snack: ...
 Dinner: ...
 Effects: ...
+Suggesttions: ...
 No extra explanations before the meal plan.
 `;
 };
@@ -264,12 +273,20 @@ Mention possible health effects briefly.`;
 exports.generateMealPlan = async (req, res) => {
   try {
     const { diagnosis } = req.body;
+    const userId = req.user.id;
 
     if (!diagnosis) {
       return res.status(400).json({ error: "Diagnosis is required." });
     }
 
-    const promptText = generateMealPlanPrompt(diagnosis);
+    // 🔹 Kullanıcı sağlık profili alınır
+    const user = await User.findById(userId);
+
+    if (!user || !user.healthProfile) {
+      return res.status(404).json({ error: "Health profile not found." });
+    }
+
+    const promptText = generateMealPlanPrompt(diagnosis, user.healthProfile);
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`;
 

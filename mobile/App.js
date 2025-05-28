@@ -62,7 +62,7 @@ function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#4D55CC",
+        tabBarActiveTintColor: "#1dd2d8",
         tabBarInactiveTintColor: "#888",
         tabBarStyle: { backgroundColor: "#fff", height: 60, paddingBottom: 5 },
         headerStyle: { backgroundColor: "#211C84" },
@@ -99,7 +99,6 @@ function MainTabs() {
 export default function App() {
   return (
     <ApiProvider>
-      {" "}
       {/* ApiContext Provider ile sarıyoruz */}
       <NavigationContainer>
         <Stack.Navigator

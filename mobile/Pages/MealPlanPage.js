@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ScrollView,
   ActivityIndicator,
@@ -8,31 +8,94 @@ import {
 import styled from "styled-components/native";
 import axios from "axios";
 import { useApi } from "../context/ApiContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const COLORS = {
-  Breakfast: "#FF7F50", // Coral
-  Lunch: "#3CB371", // MediumSeaGreen
-  Snack: "#FFA500", // Orange
-  Dinner: "#4682B4", // SteelBlue
-  Effects: "#8B0000", // DarkRed
+  Breakfast: "#FF7F50",
+  Lunch: "#3CB371",
+  Snack: "#FFA500",
+  Dinner: "#4682B4",
+  Effects: "#8B0000",
 };
 
 const MealPlanPage = ({ route }) => {
-  const diagnosis = route?.params?.prediction ?? "Unknown";
+  const [diagnosis, setDiagnosis] = useState(
+    route?.params?.prediction ?? "Unknown"
+  );
   const [loading, setLoading] = useState(false);
   const [mealPlan, setMealPlan] = useState("");
   const { apiUrl } = useApi();
 
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        setLoading(true);
+
+        // Kullanıcı token'ını al
+        const storedToken = await AsyncStorage.getItem("userToken");
+        if (!storedToken) {
+          Alert.alert("Error", "User not authenticated.");
+          setLoading(false);
+          return;
+        }
+        setToken(storedToken);
+
+        // Eğer diagnosis Unknown ise kayıtlı meal planı getir
+        if (diagnosis === "Unknown") {
+          const response = await axios.get(`${apiUrl}/api/meal-plan`, {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          });
+
+          const planText = response.data.mealPlanText || "";
+          const realDiagnosis = response.data.diagnosis || "Unknown";
+
+          setMealPlan(planText);
+          setDiagnosis(realDiagnosis); // 🔁 diagnosis'i güncelle
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          setMealPlan("");
+        } else {
+          Alert.alert("Error", "Failed to load saved meal plan.");
+          console.error(err);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
+  }, [apiUrl, diagnosis]);
+
   const fetchMealPlan = async () => {
+    if (!token) {
+      Alert.alert("Error", "User not authenticated.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await axios.post(`${apiUrl}/api/meal-plan`, {
-        diagnosis,
-      });
-      setMealPlan(response.data.mealPlan || "No meal plan received.");
+      // Meal plan oluşturmak için backend endpointine POST isteği (örneğin /api/plan-meal)
+      const response = await axios.post(
+        `${apiUrl}/api/plan-meal`,
+        { diagnosis },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const planText = response.data.mealPlan || "No meal plan received.";
+      setMealPlan(planText);
+
+      // Yeni planı kaydet
+      await axios.post(
+        `${apiUrl}/api/meal-plan`,
+        { diagnosis, mealPlanText: planText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
     } catch (err) {
-      console.error("Meal plan fetch error:", err);
-      Alert.alert("Error", "Failed to fetch meal plan.");
+      console.error("Meal plan fetch or save error:", err);
+      Alert.alert("Error", "Failed to fetch or save meal plan.");
     } finally {
       setLoading(false);
     }
@@ -41,11 +104,13 @@ const MealPlanPage = ({ route }) => {
   // mealPlan içeriğini bölümlere ayır
   const parts = {};
   if (mealPlan) {
-    ["Breakfast", "Lunch", "Snack", "Dinner", "Effects"].forEach((section) => {
-      const regex = new RegExp(`${section}:\\s*([^\\n]+)`, "i");
-      const match = mealPlan.match(regex);
-      parts[section] = match ? match[1].trim() : "";
-    });
+    ["Breakfast", "Lunch", "Snack", "Dinner", "Effects", "Suggestions"].forEach(
+      (section) => {
+        const regex = new RegExp(`${section}:\\s*([^\\n]+)`, "i");
+        const match = mealPlan.match(regex);
+        parts[section] = match ? match[1].trim() : "";
+      }
+    );
   }
 
   const backgroundImages = {
@@ -68,49 +133,53 @@ const MealPlanPage = ({ route }) => {
 
       {!loading && mealPlan ? (
         <>
-          {["Breakfast", "Lunch", "Snack", "Dinner", "Effects"].map(
-            (section) => {
-              if (!parts[section]) return null;
+          {[
+            "Breakfast",
+            "Lunch",
+            "Snack",
+            "Dinner",
+            "Effects",
+            "Suggestions",
+          ].map((section) => {
+            if (!parts[section]) return null;
 
-              if (section !== "Effects") {
-                return (
-                  <ImageBackground
-                    key={section}
-                    source={backgroundImages[section]}
-                    style={{
-                      borderRadius: 12,
-                      overflow: "hidden",
-                      marginBottom: 40,
-                    }}
-                    imageStyle={{ borderRadius: 12, opacity: 0.15 }}
-                  >
-                    <PlanBox
-                      style={{
-                        backgroundColor: "transparent",
-                        paddingVertical: 40,
-                        paddingHorizontal: 30,
-                      }}
-                    >
-                      <SectionTitle style={{ color: COLORS[section] }}>
-                        {section}
-                      </SectionTitle>
-                      <PlanText selectable>{parts[section]}</PlanText>
-                    </PlanBox>
-                  </ImageBackground>
-                );
-              }
-
-              // Effects için özel bilgilendirme kutusu
+            if (section !== "Effects" && section !== "Suggestions") {
               return (
-                <EffectsBox key={section}>
-                  <SectionTitle style={{ color: COLORS[section] }}>
-                    {section}
-                  </SectionTitle>
-                  <PlanText selectable>{parts[section]}</PlanText>
-                </EffectsBox>
+                <ImageBackground
+                  key={section}
+                  source={backgroundImages[section]}
+                  style={{
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    marginBottom: 40,
+                  }}
+                  imageStyle={{ borderRadius: 12, opacity: 0.15 }}
+                >
+                  <PlanBox
+                    style={{
+                      backgroundColor: "transparent",
+                      paddingVertical: 40,
+                      paddingHorizontal: 30,
+                    }}
+                  >
+                    <SectionTitle style={{ color: COLORS[section] }}>
+                      {section}
+                    </SectionTitle>
+                    <PlanText selectable>{parts[section]}</PlanText>
+                  </PlanBox>
+                </ImageBackground>
               );
             }
-          )}
+
+            return (
+              <EffectsBox key={section}>
+                <SectionTitle style={{ color: COLORS[section] }}>
+                  {section}
+                </SectionTitle>
+                <PlanText selectable>{parts[section]}</PlanText>
+              </EffectsBox>
+            );
+          })}
         </>
       ) : null}
     </Container>

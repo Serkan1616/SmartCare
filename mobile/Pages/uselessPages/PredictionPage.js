@@ -1,5 +1,12 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import styled from "styled-components/native";
 import { normalRanges } from "../../components/normalRanges";
 
@@ -32,6 +39,17 @@ const PredictionPage = ({ route, navigation }) => {
 
   const advice = getAdviceFromPrediction(prediction);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedInfo, setSelectedInfo] = useState({
+    key: "",
+    description: "",
+  });
+
+  const openModal = (key, description) => {
+    setSelectedInfo({ key, description });
+    setModalVisible(true);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>🧠 Anemia Prediction Result</Text>
@@ -43,6 +61,7 @@ const PredictionPage = ({ route, navigation }) => {
       <View style={styles.adviceBox}>
         <Text style={styles.advice}>{advice}</Text>
       </View>
+
       <ActionButton
         onPress={() => navigation.navigate("MealPlan", { prediction })}
       >
@@ -56,15 +75,18 @@ const PredictionPage = ({ route, navigation }) => {
           const numericValue = parseFloat(value);
           const isNormal = range
             ? numericValue >= range.min && numericValue <= range.max
-            : true; // Eğer normal aralık tanımlı değilse normal kabul et
+            : true;
+          const unit = range?.unit ?? "";
+          const description = range?.description ?? "No description available.";
 
           return (
-            <View
+            <TouchableOpacity
               key={key}
               style={[
                 styles.valueCard,
                 { borderColor: isNormal ? "#28a745" : "#dc3545" },
               ]}
+              onPress={() => openModal(key, description)}
             >
               <Text style={styles.valueKey}>{key}</Text>
               <Text
@@ -73,20 +95,38 @@ const PredictionPage = ({ route, navigation }) => {
                   { color: isNormal ? "#28a745" : "#dc3545" },
                 ]}
               >
-                {value}
+                {value} {unit}
               </Text>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
 
-      <ButtonWrapper>
-        <ActionButton onPress={() => navigation.goBack()}>
-          <ButtonText>🔙 Back to Home</ButtonText>
-        </ActionButton>
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>{selectedInfo.key}</Text>
+            <Text style={styles.modalDescription}>
+              {selectedInfo.description}
+            </Text>
+            <ActionButton onPress={() => setModalVisible(false)}>
+              <ButtonText>Close</ButtonText>
+            </ActionButton>
+          </View>
+        </View>
+      </Modal>
 
-        <PredictButton disabled>
-          <ButtonText>📤 Share Report</ButtonText>
+      <ButtonWrapper>
+        <ActionButton onPress={() => navigation.navigate("Home")}>
+          <ButtonText>Back to Home</ButtonText>
+        </ActionButton>
+        <PredictButton onPress={() => navigation.navigate("Analysis")}>
+          <ButtonText> Show Analysis Results</ButtonText>
         </PredictButton>
       </ButtonWrapper>
     </ScrollView>
@@ -95,10 +135,11 @@ const PredictionPage = ({ route, navigation }) => {
 
 export default PredictionPage;
 
-// Styled components (custom buttons)
+// Styled components (buttons)
 const ActionButton = styled.TouchableOpacity`
   background-color: #1dd2d8;
   padding-vertical: 12px;
+  padding-horizontal: 12px;
   border-radius: 8px;
   flex-direction: row;
   align-items: center;
@@ -127,7 +168,7 @@ const ButtonWrapper = styled.View`
   margin-top: 30px;
 `;
 
-// Base styles
+// Styles
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -161,48 +202,55 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#7c5f00",
   },
-  valuesContainer: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderColor: "#1dd2d8",
-    borderWidth: 1,
-  },
-  valueItem: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 5,
-  },
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 8, // gap biraz küçüldü
+    gap: 8,
     marginBottom: 20,
   },
-
   valueCard: {
-    width: "46%", // biraz daha dar
+    width: "47%",
     borderWidth: 1.2,
     borderRadius: 6,
     padding: 10,
     backgroundColor: "#f9f9f9",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 1,
+    marginBottom: 10,
   },
-
   valueKey: {
     fontSize: 13,
     color: "#333",
     fontWeight: "600",
   },
-
   valueText: {
     fontSize: 14,
     fontWeight: "bold",
+  },
+
+  // Modal styles
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    padding: 25,
+    borderRadius: 12,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1dd2d8",
+    marginBottom: 10,
+  },
+  modalDescription: {
+    fontSize: 15,
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

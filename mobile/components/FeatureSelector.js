@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 
 const featureGroups = {
@@ -19,11 +19,26 @@ const GroupTitle = styled.Text`
   color: #1dd2d8;
 `;
 
+const FeatureGrid = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+`;
+
 const FeatureItem = styled.TouchableOpacity`
-  padding: 6px 12px;
-  margin-bottom: 4px;
+  width: 30%;
+  margin-right: 3.33%;
+  margin-bottom: 10px;
+  padding: 8px 6px;
   background-color: ${(props) => (props.selected ? "#1dd2d8" : "#f0f0f0")};
   border-radius: 8px;
+  align-items: center;
+
+  ${(props) =>
+    props.index % 3 === 2 &&
+    `
+    margin-right: 0;
+  `}
 `;
 
 const FeatureText = styled.Text`
@@ -45,17 +60,20 @@ const FeatureSelector = ({ selectedFeatures, setSelectedFeatures }) => {
       {Object.entries(featureGroups).map(([groupName, features]) => (
         <View key={groupName} style={{ marginBottom: 16 }}>
           <GroupTitle>{groupName}</GroupTitle>
-          {features.map((feature) => (
-            <FeatureItem
-              key={feature}
-              selected={selectedFeatures.includes(feature)}
-              onPress={() => toggleFeature(feature)}
-            >
-              <FeatureText selected={selectedFeatures.includes(feature)}>
-                {feature}
-              </FeatureText>
-            </FeatureItem>
-          ))}
+          <FeatureGrid>
+            {features.map((feature, index) => (
+              <FeatureItem
+                key={feature}
+                selected={selectedFeatures.includes(feature)}
+                onPress={() => toggleFeature(feature)}
+                index={index}
+              >
+                <FeatureText selected={selectedFeatures.includes(feature)}>
+                  {feature}
+                </FeatureText>
+              </FeatureItem>
+            ))}
+          </FeatureGrid>
         </View>
       ))}
     </Container>

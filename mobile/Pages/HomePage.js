@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components/native";
 import { Feather } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { useApi } from "../context/ApiContext";
+import { Alert } from "react-native";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -66,21 +70,6 @@ const CardRow = styled.View`
   margin-bottom: 20px;
 `;
 
-const FeatureCard = ({ title, image, description, buttonTitle, onPress }) => (
-  <FeatureCardContainer>
-    <ImageWrapper>
-      <FeatureImage
-        source={typeof image === "string" ? { uri: image } : image}
-      />
-    </ImageWrapper>
-    <FeatureTitle>{title}</FeatureTitle>
-    <FeatureDescription>{description}</FeatureDescription>
-    <FeatureButton onPress={onPress}>
-      <FeatureButtonText>{buttonTitle}</FeatureButtonText>
-    </FeatureButton>
-  </FeatureCardContainer>
-);
-
 const FeatureCardContainer = styled.View`
   width: 48%;
   background-color: white;
@@ -135,8 +124,63 @@ const SelectedDateText = styled.Text`
   margin-top: 10px;
 `;
 
+const FeatureCard = ({ title, image, description, buttonTitle, onPress }) => (
+  <FeatureCardContainer>
+    <ImageWrapper>
+      <FeatureImage
+        source={typeof image === "string" ? { uri: image } : image}
+      />
+    </ImageWrapper>
+    <FeatureTitle>{title}</FeatureTitle>
+    <FeatureDescription>{description}</FeatureDescription>
+    <FeatureButton onPress={onPress}>
+      <FeatureButtonText>{buttonTitle}</FeatureButtonText>
+    </FeatureButton>
+  </FeatureCardContainer>
+);
+
 export default function HomePage({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { apiUrl } = useApi();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProfile();
+    }, [])
+  );
+
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      if (!token) {
+        Alert.alert("Error", "No authentication token found.");
+        return;
+      }
+
+      const response = await fetch(`${apiUrl}/api/profile`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      console.log("Profile data:", data);
+      if (response.ok) {
+        setUser(data);
+      } else {
+        Alert.alert("Error", data.msg);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container>
@@ -148,18 +192,18 @@ export default function HomePage({ navigation }) {
             }}
           />
           <GreetingText>
-            <WelcomeLine>Hi, WelcomeBack</WelcomeLine>
-            <NameLine>Jane Doe</NameLine>
+            {user ? (
+              <>
+                <WelcomeLine>Welcome Back, {user.name}</WelcomeLine>
+              </>
+            ) : (
+              <>
+                <WelcomeLine>Hi</WelcomeLine>
+                <NameLine>Loading...</NameLine>
+              </>
+            )}
           </GreetingText>
         </UserSection>
-        <IconGroup>
-          <IconButton>
-            <Feather name="settings" size={22} color="#1dd2d8" />
-          </IconButton>
-          <IconButton>
-            <Feather name="search" size={22} color="#1dd2d8" />
-          </IconButton>
-        </IconGroup>
       </TopBar>
 
       <SectionTitle>Schedule</SectionTitle>
@@ -217,9 +261,9 @@ export default function HomePage({ navigation }) {
         <FeatureCard
           title="Nutrition Advice"
           image={require("../assets/NutritionAdvice.png")}
-          description="Smart food suggestions based on anemia type."
-          buttonTitle="Get Screening"
-          onPress={() => navigation.navigate("Predictions")}
+          description="Smart food suggestions and advices based on anemia type."
+          buttonTitle="Create Meal Plan"
+          onPress={() => navigation.navigate("MealPlan")}
         />
       </CardRow>
     </Container>
